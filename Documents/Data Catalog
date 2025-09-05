@@ -1,0 +1,21 @@
+Given tables:
+
+***finished_lesson_test - table with all completed lessons. Each row represents a student's completion of a specific lesson in a specific profession.***
+
+Fields:
+
+- date_created - the time when the student completed the lesson
+- id - unique identifier for the record
+- lesson_id - the lesson's identifier linked to the table *lesson_index_test*
+- user_id - the student's identifier
+
+***lesson_index_test - table with all lessons available on the platform.***
+
+Fields:
+
+- lesson_id - table key
+- lesson_name - lesson's name
+- profession_id - profession's identifier for the lesson
+- profession_name - profession's name
+
+Each lesson can only be completed by a student once. Students can go through lessons from different professions.
