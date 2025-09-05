@@ -138,11 +138,11 @@ SELECT
     lesson_id,
     DATETRUNC(SECOND, lesson_datetime) AS lesson_datetime,
     DATETRUNC(SECOND, next_lesson_datetime) AS next_lesson_datetime,
-    delta_seconds,
+    DATEDIFF(SECOND, lesson_datetime, next_lesson_datetime) AS delta_seconds,
     CASE
-        WHEN delta_seconds < 5 THEN 'BUG_FLAG'
-        WHEN delta_seconds BETWEEN 5 AND 60 THEN 'REVIEW_FLAG'
+        WHEN DATEDIFF(SECOND, lesson_datetime, next_lesson_datetime) < 5 THEN 'BUG_FLAG'
+        WHEN DATEDIFF(SECOND, lesson_datetime, next_lesson_datetime) BETWEEN 5 AND 60 THEN 'REVIEW_FLAG'
         ELSE 'NORMAL'
     END AS completion_flag
 FROM vw_lesson_deltas
-ORDER BY completion_flag, profession_name, lesson_datetime;
+ORDER BY lesson_datetime
