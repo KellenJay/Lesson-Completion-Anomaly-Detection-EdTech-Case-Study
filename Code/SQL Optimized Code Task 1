@@ -156,6 +156,7 @@ SELECT
     profession_name,
     user_id,
     lesson_id,
+	lesson_name,
     DATETRUNC(SECOND, lesson_datetime) AS lesson_datetime,
     DATETRUNC(SECOND, next_lesson_datetime) AS next_lesson_datetime,
     DATEDIFF(SECOND, lesson_datetime, next_lesson_datetime) AS delta_seconds,
@@ -164,5 +165,5 @@ SELECT
         WHEN DATEDIFF(SECOND, lesson_datetime, next_lesson_datetime) BETWEEN 5 AND 60 THEN 'REVIEW_FLAG'
         ELSE 'NORMAL'
     END AS completion_flag
-FROM vw_lesson_deltas
+FROM vw_lesson_deltas 
 ORDER BY lesson_datetime
