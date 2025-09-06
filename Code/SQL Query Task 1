@@ -1,0 +1,40 @@
+-- Identifing users whose first data-analyst lesson was in April 2020
+WITH user_first_lesson AS (
+    SELECT 
+        fl.user_id,
+        MIN(fl.date_created) AS lesson_datetime
+    FROM finished_lesson_test fl
+    JOIN lesson_index_test li ON fl.lesson_id = li.lesson_id
+    WHERE li.profession_name = 'data-analyst' 
+    GROUP BY fl.user_id
+),
+april_cohort AS (
+    SELECT user_id
+    FROM user_first_lesson
+    WHERE lesson_datetime BETWEEN '2020-04-01' AND '2020-04-30'
+),
+-- Finding the fast lesson completions for this cohort
+ranked_lessons AS (
+    SELECT 
+        fl.user_id,
+        fl.lesson_id,
+        DATETRUNC(SECOND, fl.date_created) AS date_created,
+        li.profession_name,
+        DATETRUNC(SECOND, LEAD(fl.date_created) OVER (
+            PARTITION BY fl.user_id, li.profession_name ORDER BY fl.date_created
+        )) AS next_lesson_datetime
+    FROM finished_lesson_test fl
+    JOIN lesson_index_test li ON fl.lesson_id = li.lesson_id
+    WHERE li.profession_name = 'data-analyst'
+      AND fl.user_id IN (SELECT user_id FROM april_cohort)
+)
+SELECT
+	DATEDIFF(SECOND, date_created, next_lesson_datetime) AS delta_seconds,
+	date_created AS lesson_datetime,
+    lesson_id,
+    next_lesson_datetime,
+	profession_name,
+	user_id
+FROM ranked_lessons
+WHERE next_lesson_datetime IS NOT NULL
+    AND DATEDIFF(SECOND, date_created, next_lesson_datetime) < 5
