@@ -1,12 +1,12 @@
-# Lesson Completion Anomaly Detection: EdTech Case Study
+# Lesson Completion Anomaly Detection
 
-Root cause analysis of suspicious lesson completions on an EdTech platform. Includes SQL-based detection, storytelling for stakeholders, and dashboard-informed recommendations.
+Root cause analysis of suspicious lesson completions on platform. Includes SQL-based detection, storytelling for stakeholders, and dashboard-informed recommendations.
 
 ---
 
 ## Overview
 
-This project investigates unusual user behavior on the learning platform—specifically, lessons completed in unrealistically short timeframes. Prompted by a **suspected system issue following a platform update**, the goal was to identify false completions that could skew engagement metrics and mislead decision-making.
+This repository investigates unusual user behavior on the learning platform—specifically, lessons completed in unrealistically short timeframes. Prompted by a **suspected system issue following a platform update**, the goal was to identify false completions that could skew engagement metrics and mislead decision-making.
 
 ---
 
