@@ -1,4 +1,3 @@
--- Exploring system bug
 -- Identifing users whose first data-analyst lesson was in April 2020
 WITH user_first_lesson AS (
     SELECT 
@@ -40,7 +39,7 @@ FROM ranked_lessons
 WHERE next_lesson_datetime IS NOT NULL
     AND DATEDIFF(SECOND, date_created, next_lesson_datetime) < 5
 
-
+====================================================================================================================
 -- Calculates the percentage of lesson completions flagged as suspicious; under 5 seconds.
 SELECT
     (SELECT COUNT(*) FROM april_cohort) AS total_april_users,
@@ -49,7 +48,7 @@ SELECT
     ROUND(100.0 * SUM(CASE WHEN delta_seconds < 5 THEN 1 ELSE 0 END) / COUNT(*), 2) AS percent_suspicious
 FROM lesson_deltas;
 
-
+====================================================================================================================
 -- Identifing users whose first data-analyst lesson was in April 2020
 WITH user_first_lesson AS (
     SELECT 
@@ -101,12 +100,18 @@ SELECT
     SUM(CASE WHEN delta_seconds > 60 THEN 1 ELSE 0 END) AS over_60s
 FROM lesson_deltas
 
--- Creating views for completions and lesson delta for reusibility
+====================================================================================================================
+-- Creating view for 'completions' for reusibility
+IF OBJECT_ID('vw_completions', 'V') IS NOT NULL
+    DROP VIEW vw_completions;
+GO
+
 CREATE VIEW vw_completions AS
 SELECT 
     fl.user_id,
     fl.lesson_id,
     fl.date_created,
+    li.lesson_name,  
     li.profession_name,
     LEAD(fl.date_created) OVER (
         PARTITION BY fl.user_id, li.profession_name ORDER BY fl.date_created
@@ -114,11 +119,17 @@ SELECT
 FROM finished_lesson_test fl
 JOIN lesson_index_test li ON fl.lesson_id = li.lesson_id;
 
--- Creating views for lesson delta for reusibility
+====================================================================================================================
+-- Creating view for 'lesson_deltas' for reusibility
+IF OBJECT_ID('vw_lesson_deltas', 'V') IS NOT NULL
+    DROP VIEW vw_lesson_deltas;
+GO
+
 CREATE VIEW vw_lesson_deltas AS
 SELECT
     user_id,
     lesson_id,
+    lesson_name, 
     profession_name,
     date_created AS lesson_datetime,
     next_lesson_datetime,
@@ -126,7 +137,7 @@ SELECT
 FROM vw_completions
 WHERE next_lesson_datetime IS NOT NULL;
 
-
+====================================================================================================================
 -- Exploring bugs under 5 seconds across ALL professions
 SELECT
     profession_name,
@@ -139,6 +150,7 @@ FROM vw_lesson_deltas
 GROUP BY profession_name
 ORDER BY under_5s DESC;
 
+====================================================================================================================
 --Flagging buggy behaviour (Dashboard Report)
 SELECT
     profession_name,
