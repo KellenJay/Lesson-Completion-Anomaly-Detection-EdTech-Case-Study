@@ -47,9 +47,9 @@ This repository investigates unusual user behavior on the learning platform—sp
 
 ## Recommendations
 
-- **Implement automated duration validation** to prevent logging of unrealistically fast completions.
-- **Trigger alerts for suspicious sequences** where multiple completions happen within 5 seconds in the same track.
-- **Enhance event logging** to enable an issue-tracking dashboard with fine-grained system and user-level traceability.
+- **Implement automated validation rules** to enforce a minimum expected lesson duration. This will help prevent the system from logging unrealistically fast completions that may indicate bugs or data issues.
+- **Introduce real-time flags** that trigger alerts when multiple lesson completions occur within 5 seconds in the same profession track. This will enable early detection of recurring anomalies and support faster investigation.
+- **Enhance event logging** capabilities to capture more granular user interactions and system events. This will improve traceability, making it easier to audit, diagnose, and monitor unusual behaviors through dashboards such as an issue tracker.
 
 ---
 
