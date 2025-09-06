@@ -61,5 +61,3 @@ This project investigates unusual user behavior on the learning platform—speci
 
 ---
 
-[🔗 View Full Project on GitHub](https://github.com/KellenJay/Lesson-Completion-Anomaly-Detection-EdTech-Case-Study/tree/main)
-
