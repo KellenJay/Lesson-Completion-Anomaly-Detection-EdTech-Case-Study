@@ -41,6 +41,14 @@ WHERE next_lesson_datetime IS NOT NULL
     AND DATEDIFF(SECOND, date_created, next_lesson_datetime) < 5
 
 
+-- Calculates the percentage of lesson completions flagged as suspicious; under 5 seconds.
+SELECT
+    (SELECT COUNT(*) FROM april_cohort) AS total_april_users,
+    COUNT(*) AS total_lesson_pairs,
+    SUM(CASE WHEN delta_seconds < 5 THEN 1 ELSE 0 END) AS suspicious_completions,
+    ROUND(100.0 * SUM(CASE WHEN delta_seconds < 5 THEN 1 ELSE 0 END) / COUNT(*), 2) AS percent_suspicious
+FROM lesson_deltas;
+
 
 -- Identifing users whose first data-analyst lesson was in April 2020
 WITH user_first_lesson AS (
