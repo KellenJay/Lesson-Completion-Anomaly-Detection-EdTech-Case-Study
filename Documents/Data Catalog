@@ -1,21 +1,33 @@
-Given tables:
+# Data Catalog
 
-***finished_lesson_test - table with all completed lessons. Each row represents a student's completion of a specific lesson in a specific profession.***
+## Overview
+This data is from an online platform with multiple educational programs. Programs consist of lessons, and students go through these lessons on the platform. 
 
-Fields:
+---
 
-- date_created - the time when the student completed the lesson
-- id - unique identifier for the record
-- lesson_id - the lesson's identifier linked to the table *lesson_index_test*
-- user_id - the student's identifier
+## 1. `finished_lesson_test`
+**Purpose**: Captures all completed lessons by users across different professions. Each row represents a student's completion of a specific lesson in a specific profession.
 
-***lesson_index_test - table with all lessons available on the platform.***
+### Columns
 
-Fields:
+| Column Name    | Data Type   | Description                                                               |
+|----------------|-------------|---------------------------------------------------------------------------|
+| `id`           | BIGINT      | Unique identifier for each lesson completion record.                      |
+| `user_id`      | SMALLINT    | Unique identifier for the student completing the lesson.                  |
+| `lesson_id`    | SMALLINT    | Foreign key linking to the `dim_lessons` table.                           |
+| `date_created` | DATETIME    | Timestamp of when the lesson was marked complete by the user.             |
 
-- lesson_id - table key
-- lesson_name - lesson's name
-- profession_id - profession's identifier for the lesson
-- profession_name - profession's name
+---
 
-Each lesson can only be completed by a student once. Students can go through lessons from different professions.
+## 2. `lesson_index_test`
+**Purpose**: Stores metadata about all lessons offered on the platform. Used to enrich "finished_lesson_test" table with contextual lesson and profession information.
+
+### Columns
+
+| Column Name       | Data Type     | Description                                                               |
+|-------------------|---------------|---------------------------------------------------------------------------|
+| `lesson_id`       | SMALLINT      | Primary key for each lesson.                                              |
+| `lesson_name`     | NVARCHAR(50)  | Human-readable name/title of the lesson.                                  |
+| `profession_id`   | TINYINT       | Identifier for the profession this lesson belongs to.                     |
+| `profession_name` | NVARCHAR(50)  | Name of the profession (e.g., `'data-analyst'`, `'software-engineer'`).  |
+
