@@ -40,15 +40,6 @@ WHERE next_lesson_datetime IS NOT NULL
     AND DATEDIFF(SECOND, date_created, next_lesson_datetime) < 5
 
 ====================================================================================================================
--- Calculates the percentage of lesson completions flagged as suspicious; under 5 seconds.
-SELECT
-    (SELECT COUNT(*) FROM april_cohort) AS total_april_users,
-    COUNT(*) AS total_lesson_pairs,
-    SUM(CASE WHEN delta_seconds < 5 THEN 1 ELSE 0 END) AS suspicious_completions,
-    ROUND(100.0 * SUM(CASE WHEN delta_seconds < 5 THEN 1 ELSE 0 END) / COUNT(*), 2) AS percent_suspicious
-FROM lesson_deltas;
-
-====================================================================================================================
 -- Identifing users whose first data-analyst lesson was in April 2020
 WITH user_first_lesson AS (
     SELECT 
@@ -149,6 +140,28 @@ SELECT
 FROM vw_lesson_deltas
 GROUP BY profession_name
 ORDER BY under_5s DESC;
+
+====================================================================================================================
+-- Exploring user count  per month
+WITH first_lessons AS (
+    SELECT 
+        user_id,
+        MIN(lesson_datetime) AS first_lesson_datetime
+    FROM vw_lesson_deltas
+    WHERE profession_name = 'data-analyst'
+    GROUP BY user_id
+)
+SELECT
+    MONTH(fl.first_lesson_datetime) AS lesson_month,
+    COUNT(DISTINCT fl.user_id) AS user_count,
+    AVG(ld.delta_seconds * 1.0) AS avg_delta_seconds
+FROM first_lessons fl
+JOIN vw_lesson_deltas ld
+    ON fl.user_id = ld.user_id
+   AND fl.first_lesson_datetime = ld.lesson_datetime
+WHERE ld.profession_name = 'data-analyst'
+GROUP BY MONTH(fl.first_lesson_datetime)
+ORDER BY lesson_month;
 
 ====================================================================================================================
 --Flagging buggy behaviour (Dashboard Report)
